@@ -1,0 +1,189 @@
+service: task-management-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+  profile: catherine-amalitech
+
+  environment:
+    TASKS_TABLE: !Ref TasksTable
+    USERS_TABLE: !Ref UsersTable
+    TEAMS_TABLE: !Ref TeamsTable
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:PutItem
+            - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+            - dynamodb:Scan
+          Resource:
+            - !GetAtt TasksTable.Arn
+            - !GetAtt UsersTable.Arn
+            - !GetAtt TeamsTable.Arn
+        - Effect: Allow
+          Action:
+            - sns:Publish
+          Resource: !Ref NotificationTopic
+
+  # --- Add this block for global CORS settings ---
+  httpApi:
+    cors:
+      allowedOrigins:
+        - http://localhost:5173
+        - https://d84l1y8p4kdic.cloudfront.net
+      allowedMethods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+      allowedHeaders:
+        - Content-Type
+        - Authorization
+# --- End global CORS block ---
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+functions:
+  createTask:
+    handler: src/handlers/createTask.handler
+    events:
+      - httpApi:
+          path: /tasks
+          method: post
+          cors: true
+
+  getTasks:
+    handler: src/handlers/getTasks.handler
+    events:
+      - httpApi:
+          path: /tasks
+          method: get
+          cors: true
+
+  updateTask:
+    handler: src/handlers/updateTask.handler
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: put
+          cors: true
+
+  deleteTask:
+    handler: src/handlers/deleteTask.handler
+    events:
+      - httpApi:   
+          path: /tasks/{id}
+          method: delete
+          cors: true
+
+  getUsers:
+    handler: src/handlers/getUsers.handler
+    events:
+      - httpApi:
+          path: /users
+          method: get
+          cors: true
+
+  createTeam:
+    handler: src/handlers/createTeam.handler
+    events:
+      - httpApi:
+          path: /teams
+          method: post
+          cors: true
+
+  getTeams:
+    handler: src/handlers/getTeam.handler
+    events:
+      - httpApi:
+          path: /teams
+          method: get
+          cors: true
+
+  updateTeam:
+    handler: src/handlers/updateTeam.handler
+    events:
+      - httpApi:
+          path: /teams/{id}
+          method: put
+          cors: true
+
+  deleteTeam:
+    handler: src/handlers/deleteTeam.handler
+    events:
+      - httpApi:
+          path: /teams/{id}
+          method: delete
+          cors: true
+
+  updateTaskPatch:
+    handler: src/handlers/updateTask.handler
+    events:
+      - httpApi:
+          path: /tasks/{id}
+          method: patch
+          cors: true
+
+  notifyTeam:
+    handler: src/handlers/notifyTeam.handler
+    events:
+      - httpApi:
+          path: /notify
+          method: post
+          cors: true
+    environment:
+      NOTIFICATION_TOPIC_ARN: !Ref NotificationTopic
+
+resources:
+  Resources:
+    TasksTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: TasksTableV2
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: UsersV2
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    TeamsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Teams
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    NotificationTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: taskNotificationTopic
