@@ -12,6 +12,7 @@ interface SidebarProps {
   role: 'admin' | 'member';
   open: boolean;
   onClose: () => void;
+  
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ role, open, onClose }) => {

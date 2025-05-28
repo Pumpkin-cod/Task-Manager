@@ -6,20 +6,33 @@ const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 /**
  * TASKS API
  */
+// export const getTasks = async () => {
+//   const response = await fetch(`${BASE_URL}/tasks`);
+//   if (!response.ok) throw new Error('Failed to fetch tasks');
+//   return response.json();
+// };
+
+export interface Task {
+
+  title: string;
+  description: string;
+  deadline: string;
+  assignedTo: string;
+  status: string;
+  
+}
+
 export const getTasks = async () => {
   const response = await fetch(`${BASE_URL}/tasks`);
   if (!response.ok) throw new Error('Failed to fetch tasks');
   return response.json();
 };
 
-export interface Task {
-  title: string;
-  description?: string;
-  assignedTo?: string;
-  dueDate?: string;
-  status?: string;
-  // Add other fields as needed
-}
+export const getTaskById = async (id: string) => {
+  const response = await fetch(`${BASE_URL}/tasks/${id}`);
+  if (!response.ok) throw new Error('Failed to fetch task');
+  return response.json();
+};
 
 export const createTask = async (task: Task) => {
   const response = await fetch(`${BASE_URL}/tasks`, {
@@ -28,6 +41,34 @@ export const createTask = async (task: Task) => {
     body: JSON.stringify(task),
   });
   if (!response.ok) throw new Error('Failed to create task');
+  return response.json();
+};
+
+export const updateTask = async (id: string, task: Partial<Task>) => {
+  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(task),
+  });
+  if (!response.ok) throw new Error('Failed to update task');
+  return response.json();
+};
+
+export const deleteTask = async (id: string) => {
+  const response = await fetch(`${BASE_URL}/tasks/${id}`, {
+    method: 'DELETE',
+  });
+  if (!response.ok) throw new Error('Failed to delete task');
+  return response.json();
+};
+
+export const updateTaskStatus = async (id: string, status: string) => {
+  const response = await fetch(`${BASE_URL}/tasks/${id}/status`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ status }),
+  });
+  if (!response.ok) throw new Error('Failed to update task status');
   return response.json();
 };
 

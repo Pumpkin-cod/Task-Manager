@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from 'react-oidc-context';
@@ -7,6 +6,8 @@ import { Toaster } from 'react-hot-toast';
 import AdminDashboard from './pages/AdminDashboard';
 import MemberDashboard from './pages/MemberDashboard';
 import Header from './components/Header';
+import AllTasksPage from './pages/AllTasksPage';
+import TeamsListPage from './pages/TeamsListPage';
 
 const App: React.FC = () => {
   const auth = useAuth();
@@ -21,12 +22,10 @@ const App: React.FC = () => {
   const email = user?.profile?.email ?? "";
   const role = groups.find((g) => g.toLowerCase() === "admin") ? "admin" : "member";
 
-
   return (
     <div className="min-h-screen bg-gray-50">
       <Toaster position="top-right" reverseOrder={false} />
 
-      {/* Show header only when user is logged in */}
       {isAuthenticated && user && (
         <Header
           user={{ email, role }}
@@ -36,7 +35,7 @@ const App: React.FC = () => {
       )}
 
       <Routes>
-        {/* Login route */}
+        {/* Login */}
         <Route
           path="/login"
           element={
@@ -55,23 +54,44 @@ const App: React.FC = () => {
           }
         />
 
-        {/* Role-based dashboard */}
+        {/* Dashboard */}
         <Route
-  path="/"
-  element={
-    isAuthenticated && user ? (
-      role === "admin" ? (
-        <AdminDashboard />
-      ) : (
-        <MemberDashboard />
-      )
-    ) : (
-      <Navigate to="/login" />
-    )
-  }
-/>
-      </Routes>
+          path="/"
+          element={
+            isAuthenticated && user ? (
+              role === "admin" ? <AdminDashboard /> : <MemberDashboard />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
+        {/* Tasks */}
+        <Route
+          path="/tasks"
+          element={
+            isAuthenticated && user ? (
+              <AllTasksPage />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
+
+        {/* Teams (admin only) */}
+        {role === "admin" && (
+          <Route
+            path="/teams"
+            element={
+              isAuthenticated && user ? (
+                <TeamsListPage />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        )}
+      </Routes>
     </div>
   );
 };

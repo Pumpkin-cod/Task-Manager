@@ -11,8 +11,9 @@ interface Task {
   status: TaskStatus;
 }
 
-interface CreateTaskFormProps {
-  onCreate: (task: Task) => void;
+export interface CreateTaskFormProps {
+  onClose: () => void;
+  onCreate: (task: Task) => void | Promise<void>;
 }
 
 const CreateTaskForm: React.FC<CreateTaskFormProps> = ({ onCreate }) => {

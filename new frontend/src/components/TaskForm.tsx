@@ -29,6 +29,8 @@ type TaskFormProps = {
   teamMembers?: TeamMember[];
   onEdit?: (updatedTask: Task) => Promise<void>;
   editingTask?: Task | null;
+  onSubmit: (task: { title: string; description: string; assignedTo: string; deadline: string; status: string; }) => Promise<void>;
+
 };
 
 const TaskForm: React.FC<TaskFormProps> = ({ onCreate, onCancel, teamMembers = [] }) => {

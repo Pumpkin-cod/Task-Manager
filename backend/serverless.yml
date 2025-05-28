@@ -32,7 +32,6 @@ provider:
             - sns:Publish
           Resource: !Ref NotificationTopic
 
-  # --- Add this block for global CORS settings ---
   httpApi:
     cors:
       allowedOrigins:
