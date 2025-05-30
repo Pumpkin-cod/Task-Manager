@@ -7,9 +7,9 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  deadline: string;
   assignedTo: string;
   status: string;
+  deadline: string;
   createdAt: string;
 }
 
@@ -87,10 +87,11 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onStatusUpdate }) => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Task Title</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase ">Description</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Assigned To</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deadline</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Deadline</th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
+                
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
