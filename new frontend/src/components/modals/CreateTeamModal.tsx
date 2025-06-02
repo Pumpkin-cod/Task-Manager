@@ -1,34 +1,72 @@
-import React from 'react';
-import CreateTeamForm from '../forms/CreateTeamForm';
+import React, { useState } from 'react';
 
-
-interface CreateTeamModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onCreateTeam: (teamName: string) => void;
-  
+interface TeamMember {
+  email: string;
+  name: string;
+  role: string;
+  teamID: string;
 }
 
-const CreateTeamModal: React.FC<CreateTeamModalProps> = ({ isOpen, onClose, onCreateTeam }) => {
-  if (!isOpen) return null;
+interface CreateTeamFormProps {
+  members: TeamMember[];
+  onSubmit: (teamName: string, memberEmails: string[]) => void;
+  onCancel: () => void;
+}
+
+const CreateTeamForm: React.FC<CreateTeamFormProps> = ({ members, onSubmit, onCancel }) => {
+  const [teamName, setTeamName] = useState('');
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
+
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+    setSelectedMembers(selectedOptions);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    onSubmit(teamName, selectedMembers);
+  };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-lg relative">
-        <button
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          ✕
-        </button>
-        <CreateTeamForm onSubmit={(teamName: string) => {
-          onCreateTeam(teamName);
-          onClose();
-        }} />
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block font-medium mb-1">Team Name</label>
+        <input
+          type="text"
+          value={teamName}
+          onChange={e => setTeamName(e.target.value)}
+          required
+          className="border p-2 w-full rounded"
+        />
       </div>
-    </div>
+
+      <div>
+        <label className="block font-medium mb-1">Select Members</label>
+        <select
+          multiple
+          value={selectedMembers}
+          onChange={handleSelectChange}
+          className="border p-2 w-full rounded h-32"
+        >
+          {members.map(member => (
+            <option key={member.email} value={member.email}>
+              {member.name} ({member.email})
+            </option>
+          ))}
+        </select>
+        <small className="text-gray-500">Hold Ctrl (Windows) or Cmd (Mac) to select multiple</small>
+      </div>
+
+      <div className="flex justify-end space-x-2">
+        <button type="button" onClick={onCancel} className="px-4 py-2 bg-gray-300 rounded">
+          Cancel
+        </button>
+        <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded">
+          Create Team
+        </button>
+      </div>
+    </form>
   );
 };
 
-export default CreateTeamModal;
-
+export default CreateTeamForm;

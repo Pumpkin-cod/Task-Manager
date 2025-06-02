@@ -4,9 +4,11 @@ export interface Task {
     title: string;
     description: string;
     assignedTo: string;
-    status: string;
+    status: 'Pending' | 'In Progress' | 'Complete';
     deadline: string;
-    updatedAt: string;
+    updatedAt?: string;
+    createdAt: string; 
+
   }
 export interface TeamMember {
     id: string;
@@ -19,7 +21,7 @@ export interface TaskItem {
     description: string;
     assignedTo: string;
     team: string;
-    dueDate: string;
+    deadline: string;
     status: string;                               
     createdAt: string; 
     updatedAt: string; 

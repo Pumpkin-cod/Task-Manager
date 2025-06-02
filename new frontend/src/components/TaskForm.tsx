@@ -8,14 +8,6 @@ interface TeamMember {
   email: string;
 }
 
-// Define a type for a Task
-// interface Task {
-//   title: string;
-//   description: string;
-//   assignedTo: string;
-//   deadline: string;
-//   status: string;
-// }
 
 type TaskFormProps = {
   onCreate: (task: {

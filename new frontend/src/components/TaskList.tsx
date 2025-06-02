@@ -7,10 +7,11 @@ interface Task {
   id: string;
   title: string;
   description: string;
+  status: 'Pending' | 'In Progress' | 'Complete';
   assignedTo: string;
-  status: string;
   deadline: string;
-  createdAt: string;
+  updatedAt?: string;
+  createdAt: string; 
 }
 
 interface TaskListProps {
@@ -47,22 +48,22 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onStatusUpdate }) => {
 
   const handleStatusClick = (task: Task) => {
     const newStatus =
-      task.status === 'pending'
-        ? 'in-progress'
-        : task.status === 'in-progress'
-        ? 'completed'
-        : 'pending';
+      task.status === 'Pending'
+        ? 'In Progress'
+        : task.status === 'In Progress'
+        ? 'Complete'
+        : 'Pending';
     onStatusUpdate(task.id, { status: newStatus });
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: Task['status']) => {
     const baseClasses = 'px-2 py-1 rounded-full text-xs font-semibold';
-    switch (status.toLowerCase()) {
-      case 'completed':
+    switch (status) {
+      case 'Complete':
         return `${baseClasses} bg-green-100 text-green-800`;
-      case 'in-progress':
+      case 'In Progress':
         return `${baseClasses} bg-blue-100 text-blue-800`;
-      case 'pending':
+      case 'Pending':
         return `${baseClasses} bg-yellow-100 text-yellow-800`;
       default:
         return `${baseClasses} bg-gray-100 text-gray-800`;
@@ -140,7 +141,7 @@ const TaskList: FC<TaskListProps> = ({ tasks, onDelete, onStatusUpdate }) => {
     >
       <option value="Pending">Pending</option>
       <option value="In Progress">In Progress</option>
-      <option value="Complete">Complete</option>
+      <option value="Complete">Completed</option>
     </select>
   ) : (
     <span className={getStatusBadge(task.status)}>{task.status}</span>

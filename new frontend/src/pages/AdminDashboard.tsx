@@ -27,7 +27,7 @@ interface Task {
 const AdminDashboard = () => {
   const auth = useAuth();
   const userObj = auth.user;
-  const email = userObj?.profile?.email ?? "admin@example.com";
+  const email = userObj?.profile?.email ?? "";
   const role = "admin";
 
   const [showTaskModal, setShowTaskModal] = useState(false);
@@ -139,7 +139,7 @@ const AdminDashboard = () => {
     try {
       if (!updatedFields.status) return;
   
-      await updateTaskStatus(taskId, updatedFields.status); // API expects taskId and update object
+      await updateTaskStatus(taskId, updatedFields.status); 
       setTasks(prevTasks =>
         prevTasks.map(task =>
           task.id === taskId ? { ...task, ...updatedFields } : task
