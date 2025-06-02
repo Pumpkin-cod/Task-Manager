@@ -18,10 +18,11 @@ interface Task {
   id: string;
   title: string;
   description: string;
-  deadline: string;
+  status: 'Pending' | 'In Progress' | 'Complete';
   assignedTo: string;
-  status: string;
-  createdAt: string;
+  deadline: string;
+  updatedAt?: string;
+  createdAt: string; 
 }
 
 const AdminDashboard = () => {
@@ -65,7 +66,7 @@ const AdminDashboard = () => {
         description: task.description,
         deadline: task.deadline || task.dueDate,
         assignedTo: task.assignedTo,
-        status: task.status || 'pending',
+        status: task.status || 'Pending',
         createdAt: task.createdAt || new Date().toISOString()
       }));
       
@@ -83,7 +84,7 @@ const AdminDashboard = () => {
           description: "This is a sample task for demonstration.",
           deadline: "2024-12-31",
           assignedTo: "user@example.com",
-          status: "pending",
+          status: "Pending",
           createdAt: new Date().toISOString()
         }
       ]);

@@ -8,9 +8,11 @@ interface TeamMember {
 }
 
 interface CreateTeamFormProps {
+  isOpen: boolean;
   members: TeamMember[];
   onSubmit: (teamName: string, memberEmails: string[]) => void;
   onCancel: () => void;
+  onClose: () => void; 
 }
 
 const CreateTeamForm: React.FC<CreateTeamFormProps> = ({ members, onSubmit, onCancel }) => {
