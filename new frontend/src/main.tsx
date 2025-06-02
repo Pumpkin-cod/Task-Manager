@@ -9,10 +9,10 @@ const oidcConfig = {
   authority: "https://cognito-idp.eu-west-1.amazonaws.com/eu-west-1_BsbIOkMpb",
   client_id: "4f44616v62816066gvrdeon2ba",
   redirect_uri: import.meta.env.DEV 
-    ? "http://localhost:5173/" 
-    : "https://d84l1y8p4kdic.cloudfront.net/",
+    ? "http://localhost:5173/"
+    : "https://master.d2tglzl7478zpn.amplifyapp.com/", // ✅ Use your Amplify URL
   response_type: "code",
-  scope: "email openid phone", 
+  scope: "email openid phone",
   onSigninCallback: () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   },
@@ -25,5 +25,5 @@ createRoot(document.getElementById('root')!).render(
         <App />
       </AuthProvider>
     </BrowserRouter>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

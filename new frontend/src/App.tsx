@@ -13,14 +13,14 @@ const App: React.FC = () => {
   const auth = useAuth();
   const [, setSidebarOpen] = useState(false);
 
-  if (auth.isLoading) return <div>Loading...</div>;
-  if (auth.error) return <div>Error: {auth.error.message}</div>;
+  if (auth.isLoading) return <div className="p-8 text-center text-gray-600">Loading...</div>;
+  if (auth.error) return <div className="p-8 text-center text-red-600">Error: {auth.error.message}</div>;
 
   const isAuthenticated = auth.isAuthenticated;
   const user = auth.user;
   const groups = (user?.profile["cognito:groups"] as string[]) || [];
   const email = user?.profile?.email ?? "";
-  const role = groups.find((g) => g.toLowerCase() === "admin") ? "admin" : "member";
+  const role = groups.includes("admin") ? "admin" : "member";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -30,12 +30,12 @@ const App: React.FC = () => {
         <Header
           user={{ email, role }}
           onLogout={() => auth.signoutRedirect()}
-          onMenuClick={() => setSidebarOpen((prev) => !prev)}
+          onMenuClick={() => setSidebarOpen(prev => !prev)}
         />
       )}
 
       <Routes>
-        {/* Login */}
+        {/* Login route */}
         <Route
           path="/login"
           element={
@@ -54,7 +54,7 @@ const App: React.FC = () => {
           }
         />
 
-        {/* Dashboard */}
+        {/* Main dashboard */}
         <Route
           path="/"
           element={
@@ -78,7 +78,7 @@ const App: React.FC = () => {
           }
         />
 
-        {/* Teams (admin only) */}
+        {/* Teams (only visible to admin) */}
         {role === "admin" && (
           <Route
             path="/teams"
@@ -91,6 +91,9 @@ const App: React.FC = () => {
             }
           />
         )}
+
+        {/* Fallback route */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );
